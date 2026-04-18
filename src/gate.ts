@@ -1,4 +1,3 @@
-import { randomUUID } from "node:crypto";
 import type { AgentContext, ApprovalContext, ApprovedCommand, Decision, DecisionInput, Event, EventListener, EventType, Intent, IntentGate, IntentGateConfig, IntentStatus, JsonValue, ManagedIntent, Policy } from "./types.js";
 
 const defaultFallbackDecision: Decision = {
@@ -269,7 +268,13 @@ function createEvent(
 }
 
 function createId(prefix: string): string {
-  return `${prefix}_${randomUUID()}`;
+  return `${prefix}_${createRandomId()}`;
+}
+
+function createRandomId(): string {
+  const randomUUID = globalThis.crypto?.randomUUID;
+  if (randomUUID) return randomUUID.call(globalThis.crypto);
+  return `${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 12)}`;
 }
 
 function sanitizePayload(value: unknown): Record<string, JsonValue> {

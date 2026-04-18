@@ -2,6 +2,12 @@
 
 All notable changes to this package will be documented in this file.
 
+## 0.6.2 - 2026-04-18
+
+### Changed
+
+- Removed the Node-only `node:crypto` import so the package bundles cleanly in edge runtimes such as Cloudflare Pages Functions.
+
 ## 0.6.1 - 2026-04-18
 
 ### Added
