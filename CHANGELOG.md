@@ -2,6 +2,13 @@
 
 All notable changes to this package will be documented in this file.
 
+## 0.9.0 - 2026-04-18
+
+### Added
+
+- Added an MCP proxy starter that gates JSON-RPC-style `tools/call` requests before forwarding to an upstream MCP server.
+- Added tests for approved, blocked, queued, and approval-forwarded MCP proxy flows.
+
 ## 0.8.0 - 2026-04-18
 
 ### Added

@@ -264,6 +264,12 @@ Run an MCP-style tool gate example:
 npm run example:mcp
 ```
 
+Run an MCP proxy starter that gates `tools/call` requests before forwarding:
+
+```sh
+npm run example:mcp-proxy
+```
+
 Run a local browser approval queue:
 
 ```sh
@@ -279,6 +285,7 @@ npm run example:durable-queue
 More integration notes are in [docs/INTEGRATIONS.md](./docs/INTEGRATIONS.md).
 Cloudflare Pages setup notes are in [docs/CLOUDFLARE_PAGES.md](./docs/CLOUDFLARE_PAGES.md).
 Framework examples are in [examples/frameworks](./examples/frameworks).
+MCP proxy starter is in [examples/mcp-proxy-starter.mjs](./examples/mcp-proxy-starter.mjs).
 Roadmap items are in [docs/ROADMAP.md](./docs/ROADMAP.md).
 Launch asset instructions are in [docs/LAUNCH_ASSETS.md](./docs/LAUNCH_ASSETS.md).
 

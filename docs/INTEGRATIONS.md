@@ -64,6 +64,20 @@ const result = await gateMcpToolCall(gate, {
 });
 ```
 
+For a fuller proxy skeleton, use the MCP proxy starter:
+
+```sh
+npm run example:mcp-proxy
+```
+
+Example file:
+
+```text
+examples/mcp-proxy-starter.mjs
+```
+
+It accepts JSON-RPC-style MCP requests, forwards non-tool-call requests, gates `tools/call`, blocks dangerous shell commands, queues side-effecting calls for approval, and forwards only after an `ApprovedCommand` exists. It is intentionally transport-light so you can adapt it to stdio, HTTP, or a hosted MCP gateway.
+
 ## Executor Rule
 
 Side-effecting code should accept only `ApprovedCommand` objects. Keep raw model tool calls out of executors.

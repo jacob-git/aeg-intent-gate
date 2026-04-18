@@ -4,7 +4,6 @@ Goal: make `aeg-intent-gate` the default small approval gate developers add befo
 
 ## Near Term
 
-- Add an MCP proxy starter that gates tool calls before forwarding to an MCP server.
 - Add an OpenAI Agents SDK example.
 - Add copy-paste deployment examples for Cloudflare Pages, Vercel, and plain Node.
 - Create launch GIFs and screenshots from the live demos.
@@ -16,6 +15,7 @@ Goal: make `aeg-intent-gate` the default small approval gate developers add befo
 - Vercel AI SDK tool invocation gate.
 - LangGraph-style tool call gate.
 - Durable approval queue example.
+- MCP proxy starter for gating JSON-RPC-style `tools/call` requests before forwarding.
 
 ## Issue Backlog
 
@@ -28,16 +28,6 @@ Acceptance criteria:
 - Example maps the SDK's tool-call shape into `gateToolCall()` or `gateOpenAIToolCall()`.
 - Example returns `execute`, `requires_approval`, or `blocked`.
 - Documentation explains where approval state should live.
-
-### [Add MCP Proxy Starter](https://github.com/jacob-git/aeg-intent-gate/issues/2)
-
-Create a separate starter that gates MCP tool calls before forwarding them.
-
-Acceptance criteria:
-
-- Proxy receives MCP-style tool call requests.
-- Dangerous tools are blocked, side-effecting tools require approval.
-- Approved calls are forwarded to a configured MCP server.
 
 ### [Add Deployment Examples](https://github.com/jacob-git/aeg-intent-gate/issues/3)
 
