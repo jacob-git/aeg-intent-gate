@@ -18,6 +18,12 @@ export type AgentContext = {
   capabilities: string[];
 };
 
+export type ApprovalContext = {
+  approvedBy: string;
+  reason?: string;
+  metadata?: Record<string, unknown>;
+};
+
 export type DecisionOutcome = "approved" | "blocked" | "requires_approval";
 export type Decision = {
   outcome: DecisionOutcome;
@@ -25,7 +31,7 @@ export type Decision = {
   metadata?: Record<string, unknown>;
 };
 export type DecisionInput = DecisionOutcome | Decision;
-export type EventType = "IntentProposed" | "IntentEvaluated" | "IntentBlocked" | "IntentApproved" | "ApprovalRequired";
+export type EventType = "IntentProposed" | "IntentEvaluated" | "IntentBlocked" | "IntentApproved" | "ApprovalRequired" | "IntentApprovalGranted";
 export type JsonValue = null | boolean | number | string | JsonValue[] | { [key: string]: JsonValue };
 
 export type MaybePromise<T> = T | Promise<T>;
@@ -63,5 +69,6 @@ export type ApprovedCommand = {
 export type IntentGate<TIntent extends Intent = Intent> = {
   proposeIntent: (intent: TIntent) => Promise<ManagedIntent<TIntent>>;
   evaluateIntent: (intent: ManagedIntent<TIntent>) => Promise<Decision>;
+  approveIntent: (intent: ManagedIntent<TIntent>, decision: Decision, approval: ApprovalContext) => Promise<Decision>;
   toCommand: (intent: ManagedIntent<TIntent>, decision: Decision) => ApprovedCommand;
 };

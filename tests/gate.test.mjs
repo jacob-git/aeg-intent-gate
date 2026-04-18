@@ -168,3 +168,88 @@ test("toCommand rejects forged decisions and mismatched intents", async () => {
   assert.throws(() => gate.toCommand(proposed, { outcome: "approved" }), /unevaluated decision/);
   assert.throws(() => gate.toCommand(other, decision), /different intent/);
 });
+
+test("approveIntent converts approval-required decisions into executable approvals", async () => {
+  const events = [];
+  const gate = createIntentGate({
+    agent: baseAgent,
+    policies: [
+      createPolicy({
+        match: (intent) => intent.type === "service.restart",
+        evaluate: () => ({ outcome: "requires_approval" }),
+      }),
+    ],
+    onEvent: (event) => events.push(event),
+  });
+
+  const proposed = await gate.proposeIntent(logsIntent({
+    type: "service.restart",
+    requestedCapabilities: ["service.restart"],
+  }));
+  const decision = await gate.evaluateIntent(proposed);
+  const approved = await gate.approveIntent(proposed, decision, {
+    approvedBy: "human_1",
+    reason: "Maintenance window.",
+    metadata: { ticket: "OPS-123" },
+  });
+  const command = gate.toCommand(proposed, approved);
+
+  assert.equal(approved.outcome, "approved");
+  assert.equal(approved.reason, "Maintenance window.");
+  assert.deepEqual(approved.metadata, { ticket: "OPS-123", approvedBy: "human_1" });
+  assert.equal(proposed.status, "approved");
+  assert.equal(command.type, "service.restart");
+  assert.deepEqual(events.map((event) => event.type), [
+    "IntentProposed",
+    "IntentEvaluated",
+    "ApprovalRequired",
+    "IntentApprovalGranted",
+  ]);
+});
+
+test("approveIntent rejects blocked, approved, forged, and mismatched decisions", async () => {
+  const gate = createIntentGate({
+    agent: baseAgent,
+    policies: [
+      createPolicy({
+        match: (intent) => intent.type === "service.restart",
+        evaluate: () => ({ outcome: "requires_approval" }),
+      }),
+    ],
+  });
+  const requiresApproval = await gate.proposeIntent(logsIntent({
+    type: "service.restart",
+    requestedCapabilities: ["service.restart"],
+  }));
+  const decision = await gate.evaluateIntent(requiresApproval);
+  const approvedIntent = await gate.proposeIntent(logsIntent({ id: "intent_approved" }));
+  const approvedDecision = await gate.evaluateIntent(approvedIntent);
+  const blockedIntent = await gate.proposeIntent(logsIntent({
+    id: "intent_blocked",
+    type: "database.drop",
+    requestedCapabilities: ["database.drop"],
+  }));
+  const blockedDecision = await gate.evaluateIntent(blockedIntent);
+  const other = await gate.proposeIntent(logsIntent({
+    id: "intent_other",
+    type: "service.restart",
+    requestedCapabilities: ["service.restart"],
+  }));
+
+  await assert.rejects(
+    () => gate.approveIntent(requiresApproval, { outcome: "requires_approval" }, { approvedBy: "human_1" }),
+    /unevaluated decision/,
+  );
+  await assert.rejects(
+    () => gate.approveIntent(other, decision, { approvedBy: "human_1" }),
+    /different intent/,
+  );
+  await assert.rejects(
+    () => gate.approveIntent(approvedIntent, approvedDecision, { approvedBy: "human_1" }),
+    /approved decision/,
+  );
+  await assert.rejects(
+    () => gate.approveIntent(blockedIntent, blockedDecision, { approvedBy: "human_1" }),
+    /blocked decision/,
+  );
+});

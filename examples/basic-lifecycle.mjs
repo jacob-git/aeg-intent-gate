@@ -5,7 +5,7 @@ const events = [];
 const gate = createIntentGate({
   agent: {
     agentId: "agent_docs",
-    capabilities: ["logs.read"],
+    capabilities: ["logs.read", "service.restart"],
   },
   fallbackDecision: { outcome: "approved" },
   onEvent: (event) => {
@@ -33,9 +33,9 @@ const gate = createIntentGate({
 });
 
 const proposed = await gate.proposeIntent({
-  type: "logs.read",
+  type: "service.restart",
   target: "api",
-  requestedCapabilities: ["logs.read"],
+  requestedCapabilities: ["service.restart"],
   metadata: {
     actor: "example-agent",
     source: "basic-lifecycle",
@@ -43,8 +43,15 @@ const proposed = await gate.proposeIntent({
 });
 
 const decision = await gate.evaluateIntent(proposed);
-const command = decision.outcome === "approved"
-  ? gate.toCommand(proposed, decision)
+const executableDecision = decision.outcome === "requires_approval"
+  ? await gate.approveIntent(proposed, decision, {
+      approvedBy: "human_operator",
+      reason: "Approved during the maintenance window.",
+      metadata: { ticket: "OPS-123" },
+    })
+  : decision;
+const command = executableDecision.outcome === "approved"
+  ? gate.toCommand(proposed, executableDecision)
   : undefined;
 
 console.log(JSON.stringify({
@@ -55,6 +62,7 @@ console.log(JSON.stringify({
     target: proposed.target,
   },
   decision,
+  executableDecision,
   command,
   events,
 }, null, 2));

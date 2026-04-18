@@ -20,7 +20,7 @@ type AppIntent = Intent<{ actor: string }>;
 const gate = createIntentGate<AppIntent>({
   agent: {
     agentId: "agent_123",
-    capabilities: ["logs.read"],
+    capabilities: ["logs.read", "service.restart"],
   },
   fallbackDecision: { outcome: "approved" },
   onEvent: (event) => {
@@ -41,16 +41,22 @@ const gate = createIntentGate<AppIntent>({
 });
 
 const proposed = await gate.proposeIntent({
-  type: "logs.read",
+  type: "service.restart",
   target: "api",
-  requestedCapabilities: ["logs.read"],
+  requestedCapabilities: ["service.restart"],
   metadata: { actor: "agent" },
 });
 
 const decision = await gate.evaluateIntent(proposed);
+const executable = decision.outcome === "requires_approval"
+  ? await gate.approveIntent(proposed, decision, {
+      approvedBy: "human_1",
+      reason: "Approved for the maintenance window.",
+    })
+  : decision;
 
-if (decision.outcome === "approved") {
-  const command = gate.toCommand(proposed, decision);
+if (executable.outcome === "approved") {
+  const command = gate.toCommand(proposed, executable);
   // Pass command to your executor.
 }
 ```
@@ -66,7 +72,7 @@ npm run example
 The runtime models intent as a lifecycle:
 
 ```text
-proposed -> evaluated -> approved | blocked | requires_approval
+proposed -> evaluated -> approved | blocked | requires_approval -> approved
 ```
 
 Execution remains a separate step:
@@ -75,7 +81,7 @@ Execution remains a separate step:
 Intent -> Policy Decision -> ApprovedCommand -> Executor
 ```
 
-An `Intent` describes what an agent wants to do. `proposeIntent()` assigns an id and marks it as `proposed`. `evaluateIntent()` checks agent capabilities first, then evaluates matching policies in order. `toCommand()` converts only an approved evaluated intent into an `ApprovedCommand`.
+An `Intent` describes what an agent wants to do. `proposeIntent()` assigns an id and marks it as `proposed`. `evaluateIntent()` checks agent capabilities first, then evaluates matching policies in order. `approveIntent()` can convert a `requires_approval` decision into an approved decision after a human or external system approves it. `toCommand()` converts only an approved evaluated intent into an `ApprovedCommand`.
 
 `toCommand()` throws if the decision is blocked, requires approval, was not produced by this gate, or does not match the evaluated intent.
 
@@ -139,6 +145,19 @@ const decision = await gate.evaluateIntent(proposed);
 
 If the agent lacks a requested capability, the decision is blocked before custom policies run. Evaluation emits `IntentEvaluated` followed by the outcome event.
 
+### `gate.approveIntent(intent, decision, approval)`
+
+Approves an intent that previously returned `requires_approval`.
+
+```ts
+const approved = await gate.approveIntent(proposed, decision, {
+  approvedBy: "human_1",
+  reason: "Approved for the maintenance window.",
+});
+```
+
+Approval emits `IntentApprovalGranted`. The original decision must have been produced by this gate for the same intent.
+
 ### `gate.toCommand(intent, decision)`
 
 Creates an executable command only from an approved lifecycle decision.
@@ -160,6 +179,7 @@ The gate emits lifecycle events through `onEvent`:
 - `IntentApproved`
 - `IntentBlocked`
 - `ApprovalRequired`
+- `IntentApprovalGranted`
 
 Events include an id, timestamp, intent id, current intent status, optional decision, and metadata. Events are delivered in memory and are not persisted.
 

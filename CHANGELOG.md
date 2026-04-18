@@ -2,6 +2,15 @@
 
 All notable changes to this package will be documented in this file.
 
+## 0.2.0 - 2026-04-18
+
+### Added
+
+- Added `approveIntent(intent, decision, approval)` for human or external approval handoff.
+- Added `ApprovalContext` with `approvedBy`, optional `reason`, and optional metadata.
+- Added `IntentApprovalGranted` lifecycle event.
+- Added tests for approval success, forged decisions, mismatched intents, blocked decisions, and command creation after approval.
+
 ## 0.1.1 - 2026-04-18
 
 ### Added

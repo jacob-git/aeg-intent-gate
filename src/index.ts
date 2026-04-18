@@ -1,6 +1,7 @@
 export { createIntentGate, createPolicy } from "./gate.js";
 export type {
   AgentContext,
+  ApprovalContext,
   ApprovedCommand,
   Decision,
   DecisionInput,

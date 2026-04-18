@@ -1,4 +1,4 @@
-import type { AgentContext, ApprovedCommand, Decision, DecisionInput, Event, EventListener, EventType, Intent, IntentGate, IntentGateConfig, IntentStatus, JsonValue, ManagedIntent, Policy } from "./types.js";
+import type { AgentContext, ApprovalContext, ApprovedCommand, Decision, DecisionInput, Event, EventListener, EventType, Intent, IntentGate, IntentGateConfig, IntentStatus, JsonValue, ManagedIntent, Policy } from "./types.js";
 
 const defaultFallbackDecision: Decision = { outcome: "approved" };
 type EvaluatedIntent = {
@@ -73,6 +73,45 @@ export function createIntentGate<TIntent extends Intent = Intent>(
       });
       return decision;
     },
+    async approveIntent(
+      intent: ManagedIntent<TIntent>,
+      decision: Decision,
+      approval: ApprovalContext,
+    ): Promise<Decision> {
+      validateIntent(intent);
+      validateApproval(approval);
+      const evaluated = evaluatedDecisions.get(decision);
+      if (!evaluated) {
+        throw new Error("Cannot approve intent from an unevaluated decision.");
+      }
+      if (!isSameIntent(intent, evaluated)) {
+        throw new Error("Cannot approve a decision for a different intent.");
+      }
+      if (decision.outcome !== "requires_approval") {
+        throw new Error(`Cannot approve intent with ${decision.outcome} decision.`);
+      }
+      if (intent.status !== "requires_approval") {
+        throw new Error(`Cannot approve intent with ${intent.status} status.`);
+      }
+
+      const approved = normalizeDecision({
+        outcome: "approved",
+        reason: approval.reason,
+        metadata: {
+          ...(approval.metadata ?? {}),
+          approvedBy: approval.approvedBy,
+        },
+      });
+      const metadata = {
+        agentId: agent.agentId,
+        approvedBy: approval.approvedBy,
+        ...(approval.reason ? { reason: approval.reason } : {}),
+      };
+      intent.status = "approved";
+      await emitEvent(onEvent, "IntentApprovalGranted", intent.id, "approved", metadata, approved);
+      evaluatedDecisions.set(approved, { ...evaluated, status: "approved" });
+      return approved;
+    },
     toCommand(intent: ManagedIntent<TIntent>, decision: Decision): ApprovedCommand {
       validateIntent(intent);
       const evaluated = evaluatedDecisions.get(decision);
@@ -118,6 +157,13 @@ function validateAgent(agent: AgentContext): void {
   if (!isRecord(agent)) throw new TypeError("Agent context must be an object.");
   if (!isNonEmptyString(agent.agentId)) throw new TypeError("Agent.agentId must be a non-empty string.");
   if (!isStringArray(agent.capabilities)) throw new TypeError("Agent.capabilities must be an array of non-empty strings.");
+}
+
+function validateApproval(approval: ApprovalContext): void {
+  if (!isRecord(approval)) throw new TypeError("Approval context must be an object.");
+  if (!isNonEmptyString(approval.approvedBy)) throw new TypeError("Approval.approvedBy must be a non-empty string.");
+  if (approval.reason !== undefined && !isNonEmptyString(approval.reason)) throw new TypeError("Approval.reason must be a non-empty string when provided.");
+  if (approval.metadata !== undefined && !isRecord(approval.metadata)) throw new TypeError("Approval.metadata must be an object when provided.");
 }
 
 function findMissingCapabilities(intent: Intent, agent: AgentContext): string[] {
