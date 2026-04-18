@@ -287,6 +287,7 @@ Cloudflare Pages setup notes are in [docs/CLOUDFLARE_PAGES.md](./docs/CLOUDFLARE
 Deployment examples are in [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md).
 Framework examples are in [examples/frameworks](./examples/frameworks).
 MCP proxy starter is in [examples/mcp-proxy-starter.mjs](./examples/mcp-proxy-starter.mjs).
+OpenAI Agents SDK approval example is in [examples/frameworks/openai-agents-sdk-approval-gate.ts](./examples/frameworks/openai-agents-sdk-approval-gate.ts).
 Roadmap items are in [docs/ROADMAP.md](./docs/ROADMAP.md).
 Launch asset instructions are in [docs/LAUNCH_ASSETS.md](./docs/LAUNCH_ASSETS.md).
 

@@ -4,7 +4,6 @@ Goal: make `aeg-intent-gate` the default small approval gate developers add befo
 
 ## Near Term
 
-- Add an OpenAI Agents SDK example.
 - Create launch GIFs and screenshots from the live demos.
 
 ## Completed Examples
@@ -16,18 +15,9 @@ Goal: make `aeg-intent-gate` the default small approval gate developers add befo
 - Durable approval queue example.
 - MCP proxy starter for gating JSON-RPC-style `tools/call` requests before forwarding.
 - Deployment examples for Cloudflare Pages Functions, Vercel route handlers, and plain Node.
+- OpenAI Agents SDK approval gate example.
 
 ## Issue Backlog
-
-### [Add OpenAI Agents SDK Example](https://github.com/jacob-git/aeg-intent-gate/issues/1)
-
-Show how to gate tool calls emitted by an OpenAI Agents SDK workflow before calling real tool implementations.
-
-Acceptance criteria:
-
-- Example maps the SDK's tool-call shape into `gateToolCall()` or `gateOpenAIToolCall()`.
-- Example returns `execute`, `requires_approval`, or `blocked`.
-- Documentation explains where approval state should live.
 
 ### [Create Launch GIFs And Screenshots](https://github.com/jacob-git/aeg-intent-gate/issues/5)
 

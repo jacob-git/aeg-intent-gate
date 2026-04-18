@@ -120,6 +120,7 @@ examples/frameworks/hono-approval-middleware.ts
 examples/frameworks/express-approval-middleware.ts
 examples/frameworks/vercel-ai-sdk-tool-gate.ts
 examples/frameworks/langgraph-tool-gate.ts
+examples/frameworks/openai-agents-sdk-approval-gate.ts
 ```
 
 The Hono and Express examples show two endpoint patterns:
@@ -128,6 +129,8 @@ The Hono and Express examples show two endpoint patterns:
 - `POST /approvals/:intentId` to approve a pending intent and create an executable command
 
 The Vercel AI SDK and LangGraph-style examples show how to gate framework-native tool invocation objects before dispatching them to real tools.
+
+The OpenAI Agents SDK example shows how to map a tool invocation shape with `toolName`, `toolCallId`, and `toolArguments` into `gateToolCall()`, return `execute`, `requires_approval`, or `blocked`, and persist pending approval state outside the SDK run.
 
 ## Deployments
 

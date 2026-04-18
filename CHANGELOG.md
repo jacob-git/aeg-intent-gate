@@ -2,6 +2,13 @@
 
 All notable changes to this package will be documented in this file.
 
+## 0.11.0 - 2026-04-18
+
+### Added
+
+- Added an OpenAI Agents SDK approval-gate example that maps tool invocations into `gateToolCall()`.
+- Added tests that verify the example exposes routing, approval, and invocation-mapping helpers.
+
 ## 0.10.0 - 2026-04-18
 
 ### Added
