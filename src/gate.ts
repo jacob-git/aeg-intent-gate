@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import type { AgentContext, ApprovalContext, ApprovedCommand, Decision, DecisionInput, Event, EventListener, EventType, Intent, IntentGate, IntentGateConfig, IntentStatus, JsonValue, ManagedIntent, Policy } from "./types.js";
 
 const defaultFallbackDecision: Decision = {
@@ -10,6 +11,7 @@ type EvaluatedIntent = {
   target: string;
   requestedCapabilities: string[];
   status: IntentStatus;
+  payload: Record<string, JsonValue>;
 };
 
 export function createPolicy<TIntent extends Intent = Intent>(
@@ -63,16 +65,18 @@ export function createIntentGate<TIntent extends Intent = Intent>(
         if (metadata.fallback) metadata = { ...metadata, agentId: agent.agentId };
       }
 
-      intent.status = "evaluated";
+      const payload = sanitizePayload(intent.metadata);
       await emitEvent(onEvent, "IntentEvaluated", intentId, "evaluated", metadata, decision);
-      intent.status = toIntentStatus(decision);
-      await emitEvent(onEvent, toDecisionEventType(decision), intentId, intent.status, metadata, decision);
+      const finalStatus = toIntentStatus(decision);
+      await emitEvent(onEvent, toDecisionEventType(decision), intentId, finalStatus, metadata, decision);
+      intent.status = finalStatus;
       evaluatedDecisions.set(decision, {
         intentId,
         type: intent.type,
         target: intent.target,
         requestedCapabilities: [...intent.requestedCapabilities],
         status: intent.status,
+        payload,
       });
       return decision;
     },
@@ -110,8 +114,8 @@ export function createIntentGate<TIntent extends Intent = Intent>(
         approvedBy: approval.approvedBy,
         ...(approval.reason ? { reason: approval.reason } : {}),
       };
-      intent.status = "approved";
       await emitEvent(onEvent, "IntentApprovalGranted", intent.id, "approved", metadata, approved);
+      intent.status = "approved";
       evaluatedDecisions.set(approved, { ...evaluated, status: "approved" });
       return approved;
     },
@@ -137,14 +141,21 @@ export function createIntentGate<TIntent extends Intent = Intent>(
         agentId: agent.agentId,
         type: intent.type,
         target: intent.target,
-        payload: sanitizePayload(intent.metadata),
+        payload: cloneJsonRecord(evaluated.payload),
       };
     },
   };
 }
 
 function normalizeDecision(decision: DecisionInput): Decision {
-  return typeof decision === "string" ? { outcome: decision } : { ...decision };
+  validateDecisionInput(decision);
+  return typeof decision === "string"
+    ? { outcome: decision }
+    : {
+        outcome: decision.outcome,
+        ...(decision.reason !== undefined ? { reason: decision.reason } : {}),
+        ...(decision.metadata !== undefined ? { metadata: { ...decision.metadata } } : {}),
+      };
 }
 
 function validateIntent(intent: Intent): void {
@@ -167,6 +178,22 @@ function validateApproval(approval: ApprovalContext): void {
   if (!isNonEmptyString(approval.approvedBy)) throw new TypeError("Approval.approvedBy must be a non-empty string.");
   if (approval.reason !== undefined && !isNonEmptyString(approval.reason)) throw new TypeError("Approval.reason must be a non-empty string when provided.");
   if (approval.metadata !== undefined && !isRecord(approval.metadata)) throw new TypeError("Approval.metadata must be an object when provided.");
+}
+
+function validateDecisionInput(decision: DecisionInput): void {
+  if (typeof decision === "string") {
+    if (!isDecisionOutcome(decision)) throw new TypeError("Decision outcome must be approved, blocked, or requires_approval.");
+    return;
+  }
+
+  if (!isRecord(decision)) throw new TypeError("Decision must be a string outcome or an object.");
+  if (!isDecisionOutcome(decision.outcome)) throw new TypeError("Decision.outcome must be approved, blocked, or requires_approval.");
+  if (decision.reason !== undefined && !isNonEmptyString(decision.reason)) throw new TypeError("Decision.reason must be a non-empty string when provided.");
+  if (decision.metadata !== undefined && !isRecord(decision.metadata)) throw new TypeError("Decision.metadata must be an object when provided.");
+}
+
+function isDecisionOutcome(value: unknown): value is Decision["outcome"] {
+  return value === "approved" || value === "blocked" || value === "requires_approval";
 }
 
 function findMissingCapabilities(intent: Intent, agent: AgentContext): string[] {
@@ -214,7 +241,7 @@ function toDecisionEventType(decision: Decision): EventType {
       return "IntentBlocked";
     case "requires_approval":
       return "ApprovalRequired";
-    default:
+    case "approved":
       return "IntentApproved";
   }
 }
@@ -242,12 +269,16 @@ function createEvent(
 }
 
 function createId(prefix: string): string {
-  return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+  return `${prefix}_${randomUUID()}`;
 }
 
 function sanitizePayload(value: unknown): Record<string, JsonValue> {
   const sanitized = sanitizeJson(value);
   return isRecord(sanitized) ? sanitized : {};
+}
+
+function cloneJsonRecord(value: Record<string, JsonValue>): Record<string, JsonValue> {
+  return JSON.parse(JSON.stringify(value)) as Record<string, JsonValue>;
 }
 
 function sanitizeJson(value: unknown): JsonValue | undefined {

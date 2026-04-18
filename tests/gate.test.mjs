@@ -171,6 +171,47 @@ test("toCommand creates sanitized commands for approved evaluated intents", asyn
   });
 });
 
+test("toCommand uses the evaluated payload snapshot after intent metadata changes", async () => {
+  let proposed;
+  const gate = createIntentGate({
+    agent: baseAgent,
+    fallbackDecision: { outcome: "approved" },
+    policies: [],
+    onEvent: (event) => {
+      if (event.type === "IntentApproved") {
+        proposed.metadata.actor = "event-mutated";
+      }
+    },
+  });
+  proposed = await gate.proposeIntent(logsIntent({
+    metadata: {
+      actor: "agent",
+      nested: { keep: true },
+      list: ["ok"],
+    },
+  }));
+  const decision = await gate.evaluateIntent(proposed);
+
+  proposed.metadata.actor = "mutated";
+  proposed.metadata.nested.keep = false;
+  proposed.metadata.list.push("mutated");
+
+  const command = gate.toCommand(proposed, decision);
+  command.payload.actor = "caller-mutated-command";
+  const secondCommand = gate.toCommand(proposed, decision);
+
+  assert.deepEqual(command.payload, {
+    actor: "caller-mutated-command",
+    nested: { keep: true },
+    list: ["ok"],
+  });
+  assert.deepEqual(secondCommand.payload, {
+    actor: "agent",
+    nested: { keep: true },
+    list: ["ok"],
+  });
+});
+
 test("toCommand rejects blocked decisions", async () => {
   const gate = createIntentGate({
     agent: { agentId: "agent_1", capabilities: [] },
@@ -287,6 +328,85 @@ test("approveIntent rejects blocked, approved, forged, and mismatched decisions"
     () => gate.approveIntent(blockedIntent, blockedDecision, { approvedBy: "human_1" }),
     /blocked decision/,
   );
+});
+
+test("invalid decisions are rejected at runtime", async () => {
+  assert.throws(
+    () => createIntentGate({
+      agent: baseAgent,
+      fallbackDecision: { outcome: "maybe" },
+      policies: [],
+    }),
+    /Decision\.outcome/,
+  );
+
+  const gate = createIntentGate({
+    agent: baseAgent,
+    policies: [
+      createPolicy({
+        match: () => true,
+        evaluate: () => ({ outcome: "maybe" }),
+      }),
+    ],
+  });
+  const proposed = await gate.proposeIntent(logsIntent());
+
+  await assert.rejects(() => gate.evaluateIntent(proposed), /Decision\.outcome/);
+  assert.equal(proposed.status, "proposed");
+});
+
+test("evaluateIntent leaves status unchanged when final event emission fails", async () => {
+  let failFinalEvent = true;
+  const gate = createIntentGate({
+    agent: baseAgent,
+    fallbackDecision: { outcome: "approved" },
+    policies: [],
+    onEvent: (event) => {
+      if (failFinalEvent && event.type === "IntentApproved") {
+        failFinalEvent = false;
+        throw new Error("event sink unavailable");
+      }
+    },
+  });
+  const proposed = await gate.proposeIntent(logsIntent());
+
+  await assert.rejects(() => gate.evaluateIntent(proposed), /event sink unavailable/);
+  assert.equal(proposed.status, "proposed");
+
+  const decision = await gate.evaluateIntent(proposed);
+  assert.equal(decision.outcome, "approved");
+  assert.equal(proposed.status, "approved");
+});
+
+test("approveIntent leaves approval-required status unchanged when event emission fails", async () => {
+  let failApprovalEvent = true;
+  const gate = createIntentGate({
+    agent: baseAgent,
+    policies: [
+      createPolicy({
+        match: () => true,
+        evaluate: () => "requires_approval",
+      }),
+    ],
+    onEvent: (event) => {
+      if (failApprovalEvent && event.type === "IntentApprovalGranted") {
+        failApprovalEvent = false;
+        throw new Error("approval event sink unavailable");
+      }
+    },
+  });
+  const proposed = await gate.proposeIntent(logsIntent());
+  const decision = await gate.evaluateIntent(proposed);
+
+  await assert.rejects(
+    () => gate.approveIntent(proposed, decision, { approvedBy: "human_1" }),
+    /approval event sink unavailable/,
+  );
+  assert.equal(proposed.status, "requires_approval");
+
+  const approved = await gate.approveIntent(proposed, decision, { approvedBy: "human_1" });
+  assert.equal(approved.outcome, "approved");
+  assert.equal(proposed.status, "approved");
 });
 
 test("gateToolCall gates common tool call shapes", async () => {

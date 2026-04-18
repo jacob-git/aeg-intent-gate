@@ -92,7 +92,23 @@ Use this package when an AI agent can propose actions with side effects:
 - emails and customer messages
 - deploys, restarts, or admin actions
 
-This package is not a full policy engine, agent framework, queue, database, or durable audit log. It is the small runtime boundary before execution.
+This package is not a full policy engine, agent framework, queue, database, sandbox, identity provider, or durable audit log. It is the small runtime boundary before execution.
+
+## Security Model
+
+`aeg-intent-gate` protects command construction inside the process where you use it. It verifies that an executable command comes from an approved decision produced by the same gate instance for the same evaluated intent.
+
+The gate snapshots the sanitized command payload when an intent is evaluated. If caller code later mutates intent metadata, `toCommand()` still returns the evaluated payload snapshot.
+
+Your application is still responsible for:
+
+- authenticating agents and human approvers
+- persisting audit records and approval history
+- isolating or sandboxing executors
+- making side-effecting code accept only `ApprovedCommand` objects
+- preventing callers from bypassing the gate and invoking executors directly
+
+Treat this package as an in-process enforcement point, not as a complete security boundary by itself.
 
 ## Examples
 

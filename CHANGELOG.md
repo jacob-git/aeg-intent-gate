@@ -2,6 +2,16 @@
 
 All notable changes to this package will be documented in this file.
 
+## 0.3.1 - 2026-04-18
+
+### Changed
+
+- Snapshot evaluated command payloads so later intent metadata mutations cannot change approved commands.
+- Validate decision outcomes at runtime for fallback and policy-produced decisions.
+- Keep intent status unchanged if lifecycle event emission fails during evaluation or approval.
+- Generate intent, event, and command ids with `crypto.randomUUID()`.
+- Add README security model notes for authentication, persistence, sandboxing, and executor enforcement.
+
 ## 0.3.0 - 2026-04-18
 
 ### Added
