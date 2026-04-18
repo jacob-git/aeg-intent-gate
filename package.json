@@ -1,14 +1,21 @@
 {
   "name": "@pallattu/aeg-intent-gate",
-  "version": "0.3.1",
-  "description": "A lightweight TypeScript runtime for evaluating AI-generated intents against policy.",
+  "version": "0.4.0",
+  "description": "A tiny TypeScript command firewall for AI tool calls, MCP tools, and human approval workflows.",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "bin": {
+    "aeg-intent-gate": "./dist/cli.js"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./adapters": {
+      "types": "./dist/adapters.d.ts",
+      "import": "./dist/adapters.js"
     }
   },
   "files": [
@@ -30,6 +37,19 @@
   "keywords": [
     "ai",
     "agent",
+    "ai-agent",
+    "ai-safety",
+    "llm",
+    "mcp",
+    "model-context-protocol",
+    "tool-calling",
+    "tool-calls",
+    "human-in-the-loop",
+    "approval",
+    "guardrails",
+    "command-firewall",
+    "openai",
+    "anthropic",
     "intent",
     "policy",
     "governance",
@@ -42,8 +62,11 @@
   },
   "scripts": {
     "build": "tsc",
+    "demo": "npm run build && node dist/cli.js",
     "example": "npm run build && node examples/basic-lifecycle.mjs",
     "example:tool-call": "npm run build && node examples/tool-call-approval.mjs",
+    "example:openai": "npm run build && node examples/openai-tool-call-firewall.mjs",
+    "example:anthropic": "npm run build && node examples/anthropic-tool-use-firewall.mjs",
     "example:mcp": "npm run build && node examples/mcp-tool-gate.mjs",
     "typecheck": "tsc --noEmit",
     "test": "npm run build && node --test tests/*.test.mjs",

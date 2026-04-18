@@ -1,6 +1,13 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { createIntentGate, createPolicy, gateToolCall } from "../dist/index.js";
+import {
+  createIntentGate,
+  createPolicy,
+  gateAnthropicToolUse,
+  gateMcpToolCall,
+  gateOpenAIToolCall,
+  gateToolCall,
+} from "../dist/index.js";
 
 const baseAgent = {
   agentId: "agent_1",
@@ -468,4 +475,133 @@ test("gateToolCall defaults capability and target to the tool name", async () =>
   assert.equal(result.intent.target, "email.send");
   assert.deepEqual(result.intent.requestedCapabilities, ["email.send"]);
   assert.equal(result.command?.target, "email.send");
+});
+
+test("gateOpenAIToolCall gates Responses API function calls", async () => {
+  const gate = createIntentGate({
+    agent: {
+      agentId: "openai_agent",
+      capabilities: ["email.send"],
+    },
+    policies: [
+      createPolicy({
+        match: (intent) => intent.type === "email.send" && intent.metadata?.args?.to === "finance@example.com",
+        evaluate: () => "requires_approval",
+      }),
+    ],
+  });
+
+  const result = await gateOpenAIToolCall(gate, {
+    id: "fc_123",
+    call_id: "call_123",
+    type: "function_call",
+    name: "email.send",
+    arguments: JSON.stringify({ to: "finance@example.com", subject: "Invoice" }),
+  });
+
+  assert.equal(result.intent.id, "call_123");
+  assert.equal(result.intent.target, "openai");
+  assert.deepEqual(result.intent.metadata.args, { to: "finance@example.com", subject: "Invoice" });
+  assert.equal(result.intent.metadata.provider, "openai");
+  assert.equal(result.intent.metadata.callId, "call_123");
+  assert.equal(result.decision.outcome, "requires_approval");
+});
+
+test("gateOpenAIToolCall gates Chat Completions tool calls", async () => {
+  const gate = createIntentGate({
+    agent: {
+      agentId: "openai_agent",
+      capabilities: ["ticket.create"],
+    },
+    fallbackDecision: "approved",
+    policies: [],
+  });
+
+  const result = await gateOpenAIToolCall(gate, {
+    id: "call_456",
+    type: "function",
+    function: {
+      name: "ticket.create",
+      arguments: JSON.stringify({ title: "Refund request" }),
+    },
+  }, {
+    target: "zendesk",
+  });
+
+  assert.equal(result.intent.id, "call_456");
+  assert.equal(result.intent.target, "zendesk");
+  assert.deepEqual(result.command?.payload, {
+    provider: "openai",
+    args: { title: "Refund request" },
+  });
+});
+
+test("gateOpenAIToolCall rejects invalid JSON arguments", async () => {
+  const gate = createIntentGate({
+    agent: {
+      agentId: "openai_agent",
+      capabilities: ["ticket.create"],
+    },
+    policies: [],
+  });
+
+  await assert.rejects(
+    () => gateOpenAIToolCall(gate, {
+      type: "function_call",
+      name: "ticket.create",
+      arguments: "not-json",
+    }),
+    /valid JSON/,
+  );
+});
+
+test("gateAnthropicToolUse gates Anthropic tool use blocks", async () => {
+  const gate = createIntentGate({
+    agent: {
+      agentId: "anthropic_agent",
+      capabilities: ["refund.create"],
+    },
+    fallbackDecision: "approved",
+    policies: [],
+  });
+
+  const result = await gateAnthropicToolUse(gate, {
+    id: "toolu_123",
+    type: "tool_use",
+    name: "refund.create",
+    input: { amount: 40 },
+  });
+
+  assert.equal(result.intent.id, "toolu_123");
+  assert.equal(result.intent.target, "anthropic");
+  assert.deepEqual(result.command?.payload, {
+    provider: "anthropic",
+    args: { amount: 40 },
+  });
+});
+
+test("gateMcpToolCall gates MCP tool calls", async () => {
+  const gate = createIntentGate({
+    agent: {
+      agentId: "mcp_agent",
+      capabilities: ["filesystem.write"],
+    },
+    policies: [
+      createPolicy({
+        match: (intent) => intent.type === "filesystem.write",
+        evaluate: () => "requires_approval",
+      }),
+    ],
+  });
+
+  const result = await gateMcpToolCall(gate, {
+    server: "local-dev",
+    name: "filesystem.write",
+    arguments: { path: "/tmp/demo.txt", content: "hello" },
+  });
+
+  assert.equal(result.intent.target, "local-dev");
+  assert.equal(result.intent.metadata.provider, "mcp");
+  assert.equal(result.intent.metadata.server, "local-dev");
+  assert.equal(result.decision.outcome, "requires_approval");
 });

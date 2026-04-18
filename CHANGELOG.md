@@ -2,6 +2,22 @@
 
 All notable changes to this package will be documented in this file.
 
+## 0.4.0 - 2026-04-18
+
+### Added
+
+- Added `gateOpenAIToolCall()` for OpenAI Responses API function calls and Chat Completions tool calls.
+- Added `gateAnthropicToolUse()` for Anthropic tool-use blocks.
+- Added `gateMcpToolCall()` for MCP-style tool calls.
+- Added `./adapters` package subpath export.
+- Added OpenAI and Anthropic command-firewall examples.
+- Added `npx @pallattu/aeg-intent-gate` demo binary.
+
+### Changed
+
+- Repositioned the package as a tiny command firewall for AI tool calls and human approval workflows.
+- Expanded npm keywords for MCP, tool calling, guardrails, OpenAI, Anthropic, and human-in-the-loop discovery.
+
 ## 0.3.1 - 2026-04-18
 
 ### Changed

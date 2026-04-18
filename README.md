@@ -4,9 +4,9 @@
 [![license](https://img.shields.io/npm/l/@pallattu/aeg-intent-gate.svg)](./LICENSE)
 [![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg)](./package.json)
 
-Stop AI agents from executing unsafe tool calls without policy checks or human approval.
+Add an approval gate before AI tool calls hit your real executor.
 
-`aeg-intent-gate` is a tiny TypeScript guardrail layer between an agent's proposed action and your real executor. Use it to block dangerous actions, require approval for risky actions, emit audit-friendly lifecycle events, and only create executable commands after a decision is approved.
+`aeg-intent-gate` is a tiny TypeScript command firewall for AI agents, OpenAI function calls, Anthropic tool use, and MCP tools. Use it to block dangerous actions, require human approval for risky actions, emit audit-friendly lifecycle events, and only create executable commands after a decision is approved.
 
 ## Install
 
@@ -14,7 +14,13 @@ Stop AI agents from executing unsafe tool calls without policy checks or human a
 npm install @pallattu/aeg-intent-gate
 ```
 
-## Quick Start: Gate A Tool Call
+Try the demo without writing code:
+
+```sh
+npx @pallattu/aeg-intent-gate
+```
+
+## Quick Start: Gate An AI Tool Call
 
 ```ts
 import { createIntentGate, createPolicy, gateToolCall } from "@pallattu/aeg-intent-gate";
@@ -68,6 +74,83 @@ if (result.decision.outcome === "requires_approval") {
   const command = gate.toCommand(result.intent, approved);
   // Pass command to your executor.
 }
+```
+
+## Copy-Paste Adapters
+
+The fastest way to adopt the gate is to wrap the tool-call object you already receive from your model or agent runtime.
+
+### OpenAI Responses API Function Calls
+
+OpenAI function calls include a `name`, JSON-encoded `arguments`, and a `call_id`. Gate the call before routing it to real application code:
+
+```ts
+import { gateOpenAIToolCall } from "@pallattu/aeg-intent-gate";
+
+const result = await gateOpenAIToolCall(gate, {
+  id: "fc_123",
+  call_id: "call_123",
+  type: "function_call",
+  name: "email.send",
+  arguments: JSON.stringify({
+    to: "customer@example.com",
+    subject: "Refund update",
+  }),
+}, {
+  target: "postmark",
+});
+
+if (result.command) {
+  await execute(result.command);
+}
+```
+
+### OpenAI Chat Completions Tool Calls
+
+```ts
+import { gateOpenAIToolCall } from "@pallattu/aeg-intent-gate";
+
+const result = await gateOpenAIToolCall(gate, {
+  id: "call_456",
+  type: "function",
+  function: {
+    name: "ticket.create",
+    arguments: JSON.stringify({ title: "Refund request" }),
+  },
+});
+```
+
+### Anthropic Tool Use
+
+```ts
+import { gateAnthropicToolUse } from "@pallattu/aeg-intent-gate";
+
+const result = await gateAnthropicToolUse(gate, {
+  id: "toolu_123",
+  type: "tool_use",
+  name: "service.restart",
+  input: {
+    service: "api",
+    region: "us-central1",
+  },
+}, {
+  target: "production",
+});
+```
+
+### MCP Tool Calls
+
+```ts
+import { gateMcpToolCall } from "@pallattu/aeg-intent-gate";
+
+const result = await gateMcpToolCall(gate, {
+  server: "local-dev",
+  name: "filesystem.write",
+  arguments: {
+    path: "/tmp/demo.txt",
+    content: "hello",
+  },
+});
 ```
 
 By default, unmatched actions require approval. If you want fail-open behavior for a trusted local workflow, opt in explicitly:
@@ -124,6 +207,18 @@ Run a tool-call approval example:
 npm run example:tool-call
 ```
 
+Run an OpenAI-style function-call firewall example:
+
+```sh
+npm run example:openai
+```
+
+Run an Anthropic-style tool-use firewall example:
+
+```sh
+npm run example:anthropic
+```
+
 Run an MCP-style tool gate example:
 
 ```sh
@@ -168,6 +263,41 @@ if (result.command) {
 ```
 
 `requestedCapabilities` defaults to `[tool]`, and `target` defaults to `tool`.
+
+### `gateOpenAIToolCall(gate, toolCall, options?)`
+
+Gates OpenAI Responses API function calls and Chat Completions tool calls.
+
+```ts
+const result = await gateOpenAIToolCall(gate, openAIToolCall, {
+  target: "stripe",
+  requestedCapabilities: ["refund.create"],
+});
+```
+
+Responses API calls use `call_id` as the intent id when present. Chat Completions calls use the tool call `id`. JSON arguments must decode to an object.
+
+### `gateAnthropicToolUse(gate, toolUse, options?)`
+
+Gates Anthropic tool-use blocks.
+
+```ts
+const result = await gateAnthropicToolUse(gate, toolUse, {
+  target: "production",
+});
+```
+
+### `gateMcpToolCall(gate, toolCall, options?)`
+
+Gates MCP-style tool calls.
+
+```ts
+const result = await gateMcpToolCall(gate, {
+  server: "local-dev",
+  name: "shell.exec",
+  arguments: { command: "npm test" },
+});
+```
 
 ### `createIntentGate(config)`
 

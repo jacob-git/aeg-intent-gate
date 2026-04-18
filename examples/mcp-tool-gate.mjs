@@ -1,4 +1,4 @@
-import { createIntentGate, createPolicy, gateToolCall } from "../dist/index.js";
+import { createIntentGate, createPolicy, gateMcpToolCall } from "../dist/index.js";
 
 const gate = createIntentGate({
   agent: {
@@ -31,11 +31,7 @@ const gate = createIntentGate({
 });
 
 async function handleMcpToolCall(toolCall) {
-  const result = await gateToolCall(gate, {
-    tool: toolCall.name,
-    target: toolCall.server,
-    args: toolCall.arguments,
-  });
+  const result = await gateMcpToolCall(gate, toolCall);
 
   if (result.command) {
     return {
