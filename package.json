@@ -13,12 +13,36 @@
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jacob-git/aeg-intent-gate.git"
+  },
+  "homepage": "https://github.com/jacob-git/aeg-intent-gate#readme",
+  "bugs": {
+    "url": "https://github.com/jacob-git/aeg-intent-gate/issues"
+  },
+  "keywords": [
+    "ai",
+    "agent",
+    "intent",
+    "policy",
+    "governance",
+    "capabilities",
+    "authorization",
+    "typescript"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit",
-    "test": "npm run build && node --test tests/*.test.mjs"
+    "test": "npm run build && node --test tests/*.test.mjs",
+    "prepublishOnly": "npm test"
   },
   "devDependencies": {
     "typescript": "^5.4.0"
