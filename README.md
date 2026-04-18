@@ -6,7 +6,7 @@
 
 Add an approval gate before AI tool calls hit your real executor.
 
-`aeg-intent-gate` is a tiny TypeScript command firewall for AI agents, OpenAI function calls, Anthropic tool use, and MCP tools. Use it to block dangerous actions, require human approval for risky actions, emit audit-friendly lifecycle events, and only create executable commands after a decision is approved.
+`aeg-intent-gate` is a tiny TypeScript approval gate for AI agents, OpenAI function calls, Anthropic tool use, and MCP tools. Use it to block dangerous actions, require human approval for risky actions, emit audit-friendly lifecycle events, and only create executable commands after a decision is approved.
 
 Live demo: [aeg-intent-gate.pages.dev](https://aeg-intent-gate.pages.dev)
 
@@ -215,13 +215,13 @@ Run a tool-call approval example:
 npm run example:tool-call
 ```
 
-Run an OpenAI-style function-call firewall example:
+Run an OpenAI-style function-call approval example:
 
 ```sh
 npm run example:openai
 ```
 
-Run an Anthropic-style tool-use firewall example:
+Run an Anthropic-style tool-use approval example:
 
 ```sh
 npm run example:anthropic

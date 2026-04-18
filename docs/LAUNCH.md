@@ -1,6 +1,6 @@
 # Launch Plan
 
-Goal: make `aeg-intent-gate` the default tiny command firewall developers reach for before executing AI tool calls.
+Goal: make `aeg-intent-gate` the default tiny approval gate developers reach for before executing AI tool calls.
 
 ## Positioning
 
@@ -10,14 +10,14 @@ Primary line:
 
 Short description:
 
-> `aeg-intent-gate` is a tiny TypeScript command firewall for OpenAI function calls, Anthropic tool use, MCP tools, and human approval workflows.
+> `aeg-intent-gate` is a tiny TypeScript approval gate for OpenAI function calls, Anthropic tool use, MCP tools, and human-in-the-loop workflows.
 
 ## Launch Post
 
 Title ideas:
 
 - Do not execute AI tool calls directly
-- A tiny command firewall for AI agents
+- A tiny approval gate for AI tool calls
 - Human approval before MCP tool execution
 
 Draft:
@@ -32,7 +32,7 @@ AI agents increasingly return structured tool calls that look safe to execute:
 
 The mistake is treating model output as a command too early.
 
-I built `aeg-intent-gate`, a tiny TypeScript command firewall that sits between proposed AI tool calls and real executors.
+I built `aeg-intent-gate`, a tiny TypeScript approval gate that sits between proposed AI tool calls and real executors.
 
 It supports:
 
@@ -64,7 +64,7 @@ Repo: https://github.com/jacob-git/aeg-intent-gate
 
 ## Distribution Checklist
 
-- Pin the GitHub repo description to "A tiny TypeScript command firewall for AI tool calls, MCP tools, and human approval workflows."
+- Pin the GitHub repo description to "A tiny TypeScript approval gate for AI tool calls, MCP tools, and human-in-the-loop workflows."
 - Add GitHub topics: `ai`, `agents`, `mcp`, `tool-calling`, `guardrails`, `human-in-the-loop`, `openai`, `anthropic`, `typescript`.
 - Share the launch post in MCP, OpenAI, Anthropic, TypeScript, and agent-builder communities.
 - Create a short terminal GIF from `npx @pallattu/aeg-intent-gate`.

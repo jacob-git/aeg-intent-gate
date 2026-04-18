@@ -2,6 +2,13 @@
 
 All notable changes to this package will be documented in this file.
 
+## 0.5.2 - 2026-04-18
+
+### Changed
+
+- Reworded public package, README, site, and launch copy from "command firewall" to "approval gate" to keep the project focused on AI tool-call gating.
+- Replaced the `command-firewall` npm keyword with `approval-gate` and `intent-gate`.
+
 ## 0.5.1 - 2026-04-18
 
 ### Changed
