@@ -1,6 +1,6 @@
 {
   "name": "@pallattu/aeg-intent-gate",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "A tiny TypeScript command firewall for AI tool calls, MCP tools, and human approval workflows.",
   "type": "module",
   "main": "dist/index.js",
@@ -20,6 +20,7 @@
   },
   "files": [
     "dist",
+    "docs",
     "examples",
     "README.md",
     "CHANGELOG.md",
@@ -68,6 +69,7 @@
     "example:openai": "npm run build && node examples/openai-tool-call-firewall.mjs",
     "example:anthropic": "npm run build && node examples/anthropic-tool-use-firewall.mjs",
     "example:mcp": "npm run build && node examples/mcp-tool-gate.mjs",
+    "example:approval-server": "npm run build && node examples/approval-server.mjs",
     "typecheck": "tsc --noEmit",
     "test": "npm run build && node --test tests/*.test.mjs",
     "prepublishOnly": "npm test"

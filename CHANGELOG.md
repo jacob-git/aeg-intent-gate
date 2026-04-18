@@ -2,6 +2,14 @@
 
 All notable changes to this package will be documented in this file.
 
+## 0.5.0 - 2026-04-18
+
+### Added
+
+- Added a dependency-free browser approval queue demo at `npm run example:approval-server`.
+- Added `docs/INTEGRATIONS.md` with OpenAI, Anthropic, MCP, and executor integration guidance.
+- Added `docs/LAUNCH.md` with positioning, launch copy, and distribution checklist.
+
 ## 0.4.0 - 2026-04-18
 
 ### Added

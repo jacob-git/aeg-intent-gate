@@ -20,6 +20,12 @@ Try the demo without writing code:
 npx @pallattu/aeg-intent-gate
 ```
 
+Run a local approval queue in the browser:
+
+```sh
+npm run example:approval-server
+```
+
 ## Quick Start: Gate An AI Tool Call
 
 ```ts
@@ -224,6 +230,14 @@ Run an MCP-style tool gate example:
 ```sh
 npm run example:mcp
 ```
+
+Run a local browser approval queue:
+
+```sh
+npm run example:approval-server
+```
+
+More integration notes are in [docs/INTEGRATIONS.md](./docs/INTEGRATIONS.md).
 
 ## Core Lifecycle
 
