@@ -2,6 +2,12 @@
 
 All notable changes to this package will be documented in this file.
 
+## 0.6.1 - 2026-04-18
+
+### Added
+
+- Added the public starter app link to README, launch copy, and the demo site.
+
 ## 0.6.0 - 2026-04-18
 
 ### Added

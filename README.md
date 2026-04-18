@@ -24,6 +24,15 @@ Try the demo without writing code:
 npx @pallattu/aeg-intent-gate
 ```
 
+Clone a complete starter app:
+
+```sh
+git clone https://github.com/jacob-git/aeg-intent-gate-starter.git
+cd aeg-intent-gate-starter
+npm install
+npm start
+```
+
 Run a local approval queue in the browser:
 
 ```sh
@@ -204,6 +213,14 @@ Your application is still responsible for:
 Treat this package as an in-process enforcement point, not as a complete security boundary by itself.
 
 ## Examples
+
+Complete browser starter app:
+
+https://github.com/jacob-git/aeg-intent-gate-starter
+
+Live hosted demo:
+
+https://aeg-intent-gate.pages.dev
 
 Run the lifecycle example:
 

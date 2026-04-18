@@ -60,6 +60,7 @@ npm install @pallattu/aeg-intent-gate
 
 Demo: https://aeg-intent-gate.pages.dev
 Repo: https://github.com/jacob-git/aeg-intent-gate
+Starter app: https://github.com/jacob-git/aeg-intent-gate-starter
 ```
 
 ## Distribution Checklist
@@ -70,12 +71,13 @@ Repo: https://github.com/jacob-git/aeg-intent-gate
 - Share the launch post in MCP, OpenAI, Anthropic, TypeScript, and agent-builder communities.
 - Create a short terminal GIF from `npx @pallattu/aeg-intent-gate`.
 - Create a short browser GIF from `npm run example:approval-server`.
+- Pin the starter app in GitHub/social posts: `https://github.com/jacob-git/aeg-intent-gate-starter`.
 - Publish a follow-up article focused only on MCP approval gates.
 - Publish a follow-up article focused only on OpenAI function-call approval.
 
 ## Next Engineering Bets
 
-- Separate MCP proxy starter repository.
+- MCP proxy starter repository.
 - Approval server with persistent storage adapters.
 - Hono/Express middleware.
 - Vercel AI SDK example.
