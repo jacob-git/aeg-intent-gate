@@ -8,6 +8,7 @@ Goal: make `aeg-intent-gate` the default small approval gate developers add befo
 - Add an MCP proxy starter that gates tool calls before forwarding to an MCP server.
 - Add an OpenAI Agents SDK example.
 - Add copy-paste deployment examples for Cloudflare Pages, Vercel, and plain Node.
+- Create launch GIFs and screenshots from the live demos.
 
 ## Completed Examples
 
@@ -18,7 +19,7 @@ Goal: make `aeg-intent-gate` the default small approval gate developers add befo
 
 ## Issue Backlog
 
-### Add OpenAI Agents SDK Example
+### [Add OpenAI Agents SDK Example](https://github.com/jacob-git/aeg-intent-gate/issues/1)
 
 Show how to gate tool calls emitted by an OpenAI Agents SDK workflow before calling real tool implementations.
 
@@ -28,7 +29,7 @@ Acceptance criteria:
 - Example returns `execute`, `requires_approval`, or `blocked`.
 - Documentation explains where approval state should live.
 
-### Add Durable Approval Queue Example
+### [Add Durable Approval Queue Example](https://github.com/jacob-git/aeg-intent-gate/issues/4)
 
 The current approval demo is intentionally in-memory. Add an example using a small persistence boundary.
 
@@ -38,7 +39,7 @@ Acceptance criteria:
 - Approval records include `approvedBy`, reason, and timestamp.
 - Executor accepts only `ApprovedCommand`.
 
-### Add MCP Proxy Starter
+### [Add MCP Proxy Starter](https://github.com/jacob-git/aeg-intent-gate/issues/2)
 
 Create a separate starter that gates MCP tool calls before forwarding them.
 
@@ -47,6 +48,27 @@ Acceptance criteria:
 - Proxy receives MCP-style tool call requests.
 - Dangerous tools are blocked, side-effecting tools require approval.
 - Approved calls are forwarded to a configured MCP server.
+
+### [Add Deployment Examples](https://github.com/jacob-git/aeg-intent-gate/issues/3)
+
+Document copy-paste deployment patterns for Cloudflare Pages, Vercel, and plain Node.
+
+Acceptance criteria:
+
+- Cloudflare Pages Functions notes cover build command, output directory, and compatibility flags.
+- Vercel notes explain where the gate runs and how pending approvals should be persisted.
+- Plain Node notes show a minimal server deployment.
+- README links to the deployment guide.
+
+### [Create Launch GIFs And Screenshots](https://github.com/jacob-git/aeg-intent-gate/issues/5)
+
+Create visual assets from the live starter and terminal demo.
+
+Acceptance criteria:
+
+- Browser GIF shows the starter queue, one approval, the `ApprovedCommand`, and the blocked `user.delete` action.
+- Terminal GIF shows `npx @pallattu/aeg-intent-gate`.
+- Static screenshots include the main hero, approval flow diagram, and starter queue.
 
 ## Non-Goals
 
