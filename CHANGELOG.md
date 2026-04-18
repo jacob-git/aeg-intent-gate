@@ -2,6 +2,13 @@
 
 All notable changes to this package will be documented in this file.
 
+## 0.12.0 - 2026-04-18
+
+### Added
+
+- Added launch screenshots and GIF-format share assets under `docs/assets`.
+- Updated launch asset docs with ready-to-use browser demo, terminal demo, main hero, and starter queue assets.
+
 ## 0.11.0 - 2026-04-18
 
 ### Added

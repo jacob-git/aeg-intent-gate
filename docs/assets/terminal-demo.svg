@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="820" viewBox="0 0 1400 820" role="img" aria-label="terminal demo for npx aeg-intent-gate">
+  <rect width="1400" height="820" fill="#eef5f3"/>
+  <rect x="110" y="100" width="1180" height="620" rx="14" fill="#101828"/>
+  <rect x="110" y="100" width="1180" height="70" rx="14" fill="#111827"/>
+  <circle cx="150" cy="135" r="12" fill="#f87171"/>
+  <circle cx="190" cy="135" r="12" fill="#fbbf24"/>
+  <circle cx="230" cy="135" r="12" fill="#34d399"/>
+  <text x="150" y="235" font-family="Menlo, Consolas, monospace" font-size="34" font-weight="700" fill="#e5e7eb">$ npx @pallattu/aeg-intent-gate</text>
+  <text x="150" y="330" font-family="Menlo, Consolas, monospace" font-size="34" fill="#d1d5db">safe email: </text>
+  <text x="400" y="330" font-family="Menlo, Consolas, monospace" font-size="34" font-weight="800" fill="#86efac">approved</text>
+  <text x="150" y="410" font-family="Menlo, Consolas, monospace" font-size="34" fill="#d1d5db">large refund: </text>
+  <text x="458" y="410" font-family="Menlo, Consolas, monospace" font-size="34" font-weight="800" fill="#fde68a">requires_approval</text>
+  <text x="150" y="490" font-family="Menlo, Consolas, monospace" font-size="34" fill="#d1d5db">dangerous shell: </text>
+  <text x="530" y="490" font-family="Menlo, Consolas, monospace" font-size="34" font-weight="800" fill="#fca5a5">blocked</text>
+  <text x="150" y="600" font-family="Menlo, Consolas, monospace" font-size="30" fill="#94a3b8">Gate AI tool calls before execution.</text>
+</svg>

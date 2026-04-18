@@ -290,6 +290,7 @@ MCP proxy starter is in [examples/mcp-proxy-starter.mjs](./examples/mcp-proxy-st
 OpenAI Agents SDK approval example is in [examples/frameworks/openai-agents-sdk-approval-gate.ts](./examples/frameworks/openai-agents-sdk-approval-gate.ts).
 Roadmap items are in [docs/ROADMAP.md](./docs/ROADMAP.md).
 Launch asset instructions are in [docs/LAUNCH_ASSETS.md](./docs/LAUNCH_ASSETS.md).
+Launch screenshots and GIFs are in [docs/assets](./docs/assets).
 
 ## Core Lifecycle
 

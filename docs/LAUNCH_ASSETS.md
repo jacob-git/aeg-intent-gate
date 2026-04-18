@@ -1,17 +1,21 @@
 # Launch Assets
 
-These are the concrete assets to create before broad posting.
+These are the concrete assets for broad posting.
 
 ## Browser Demo GIF
 
-URL: https://aeg-intent-gate-starter.pages.dev
+Asset:
 
-Shot list:
+```text
+docs/assets/browser-demo.gif
+```
 
-1. Show the pending `email.send` and `refund.create` intents.
-2. Click `Approve and execute` for `email.send`.
-3. Show the resulting `ApprovedCommand`.
-4. End with the blocked `user.delete` intent visible.
+Source:
+
+```text
+docs/assets/browser-demo-storyboard.svg
+docs/assets/browser-demo-storyboard.png
+```
 
 Caption:
 
@@ -19,17 +23,18 @@ Caption:
 
 ## Terminal GIF
 
-Command:
+Asset:
 
-```sh
-npx @pallattu/aeg-intent-gate
+```text
+docs/assets/terminal-demo.gif
 ```
 
-Shot list:
+Source:
 
-1. Run the command.
-2. Show approved, requires approval, and blocked outcomes.
-3. Keep the final frame on the package name and install command.
+```text
+docs/assets/terminal-demo.svg
+docs/assets/terminal-demo.png
+```
 
 Caption:
 
@@ -37,9 +42,12 @@ Caption:
 
 ## Static Screenshots
 
-- Main site hero: https://aeg-intent-gate.pages.dev
-- Approval flow diagram: https://aeg-intent-gate.pages.dev/assets/approval-flow.svg
-- Starter app queue: https://aeg-intent-gate-starter.pages.dev
+```text
+docs/assets/main-hero-screenshot.png
+docs/assets/starter-queue-screenshot.png
+docs/assets/starter-queue-screenshot.svg
+site/assets/approval-flow.svg
+```
 
 ## Short Social Copy
 
