@@ -41,6 +41,7 @@
   },
   "scripts": {
     "build": "tsc",
+    "example": "npm run build && node examples/basic-lifecycle.mjs",
     "typecheck": "tsc --noEmit",
     "test": "npm run build && node --test tests/*.test.mjs",
     "prepublishOnly": "npm test"

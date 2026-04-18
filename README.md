@@ -55,6 +55,12 @@ if (decision.outcome === "approved") {
 }
 ```
 
+Run the complete lifecycle example locally:
+
+```sh
+npm run example
+```
+
 ## Core Concept
 
 The runtime models intent as a lifecycle:
