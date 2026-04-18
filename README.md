@@ -41,6 +41,12 @@ Run a local approval queue in the browser:
 npm run example:approval-server
 ```
 
+Run a durable approval queue example:
+
+```sh
+npm run example:durable-queue
+```
+
 ## Quick Start: Gate An AI Tool Call
 
 ```ts
@@ -262,6 +268,12 @@ Run a local browser approval queue:
 
 ```sh
 npm run example:approval-server
+```
+
+Run a durable approval queue example that persists pending approvals and approves after a simulated restart:
+
+```sh
+npm run example:durable-queue
 ```
 
 More integration notes are in [docs/INTEGRATIONS.md](./docs/INTEGRATIONS.md).

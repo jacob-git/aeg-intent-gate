@@ -1,6 +1,6 @@
 {
   "name": "@pallattu/aeg-intent-gate",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "A tiny TypeScript approval gate for AI tool calls, MCP tools, and human-in-the-loop workflows.",
   "type": "module",
   "main": "dist/index.js",
@@ -73,6 +73,7 @@
     "example:anthropic": "npm run build && node examples/anthropic-tool-use-firewall.mjs",
     "example:mcp": "npm run build && node examples/mcp-tool-gate.mjs",
     "example:approval-server": "npm run build && node examples/approval-server.mjs",
+    "example:durable-queue": "npm run build && node examples/durable-approval-queue.mjs",
     "typecheck": "tsc --noEmit",
     "test": "npm run build && node --test tests/*.test.mjs",
     "prepublishOnly": "npm test"

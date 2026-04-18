@@ -81,6 +81,22 @@ async function execute(command: ApprovedCommand) {
 }
 ```
 
+## Durable Approval Queue
+
+The browser demo keeps pending approvals in memory. The durable queue example stores pending approvals in a JSON file, recreates the gate after a simulated restart, re-evaluates the stored tool call, and only then creates an `ApprovedCommand`.
+
+```sh
+npm run example:durable-queue
+```
+
+Example file:
+
+```text
+examples/durable-approval-queue.mjs
+```
+
+This is intentionally a small file-backed example, not a production database abstraction. In a real app, store the pending tool call, gate options, approval metadata, and resulting `ApprovedCommand` in your database or queue.
+
 ## Frameworks
 
 The `examples/frameworks` directory includes copy-paste examples for common server and agent-runtime surfaces:

@@ -2,6 +2,13 @@
 
 All notable changes to this package will be documented in this file.
 
+## 0.8.0 - 2026-04-18
+
+### Added
+
+- Added a durable approval queue example that persists pending approvals and approves them after a simulated restart.
+- Added tests for the durable approval queue example.
+
 ## 0.7.0 - 2026-04-18
 
 ### Added
