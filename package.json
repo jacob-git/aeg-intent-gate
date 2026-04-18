@@ -64,6 +64,8 @@
   "scripts": {
     "build": "tsc",
     "demo": "npm run build && node dist/cli.js",
+    "site:serve": "npx wrangler pages dev site",
+    "site:deploy": "npx wrangler pages deploy site --project-name aeg-intent-gate",
     "example": "npm run build && node examples/basic-lifecycle.mjs",
     "example:tool-call": "npm run build && node examples/tool-call-approval.mjs",
     "example:openai": "npm run build && node examples/openai-tool-call-firewall.mjs",

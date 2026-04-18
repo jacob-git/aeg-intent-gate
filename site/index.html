@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>aeg-intent-gate | AI command firewall</title>
+  <meta name="description" content="A tiny TypeScript command firewall for AI tool calls, MCP tools, and human approval workflows.">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="hero">
+    <nav>
+      <a class="brand" href="#">aeg-intent-gate</a>
+      <div>
+        <a href="https://www.npmjs.com/package/@pallattu/aeg-intent-gate">npm</a>
+        <a href="https://github.com/jacob-git/aeg-intent-gate">GitHub</a>
+      </div>
+    </nav>
+    <section class="hero-grid">
+      <div>
+        <p class="eyebrow">AI command firewall</p>
+        <h1>Do not execute AI tool calls directly. Gate them first.</h1>
+        <p class="lede">Block dangerous actions, require human approval for risky tool calls, and only create executable commands after policy approves them.</p>
+        <div class="actions">
+          <a class="button primary" href="#demo">Try the demo</a>
+          <a class="button secondary" href="#install">Install</a>
+        </div>
+      </div>
+      <div class="terminal" aria-label="terminal demo">
+        <div class="terminal-bar"><span></span><span></span><span></span></div>
+        <pre><code>$ npx @pallattu/aeg-intent-gate
+
+safe email: approved
+large refund: requires_approval
+dangerous shell: blocked</code></pre>
+      </div>
+    </section>
+  </header>
+
+  <main>
+    <section id="demo" class="band">
+      <div class="section-heading">
+        <p class="eyebrow">Live browser demo</p>
+        <h2>Model-proposed actions enter the queue before execution.</h2>
+      </div>
+      <div class="demo-layout">
+        <div class="queue" id="queue"></div>
+        <aside class="command-panel">
+          <h3>Approved command</h3>
+          <pre id="command-output">Approve a queued action to create a command.</pre>
+        </aside>
+      </div>
+    </section>
+
+    <section class="band split">
+      <div>
+        <p class="eyebrow">Adapters</p>
+        <h2>Wrap the tool-call shapes developers already use.</h2>
+        <p>OpenAI function calls, Anthropic tool-use blocks, and MCP tool calls can all pass through the same policy lifecycle.</p>
+      </div>
+      <div class="tabs">
+        <div class="tab-buttons" role="tablist">
+          <button class="active" data-tab="openai">OpenAI</button>
+          <button data-tab="anthropic">Anthropic</button>
+          <button data-tab="mcp">MCP</button>
+        </div>
+        <pre id="adapter-code"></pre>
+      </div>
+    </section>
+
+    <section id="install" class="band install">
+      <div>
+        <p class="eyebrow">Install</p>
+        <h2>Small core. Zero runtime dependencies.</h2>
+      </div>
+      <pre><code>npm install @pallattu/aeg-intent-gate
+npx @pallattu/aeg-intent-gate</code></pre>
+    </section>
+
+    <section class="band cards">
+      <article>
+        <h3>Fail closed by default</h3>
+        <p>Unmatched actions require approval unless you explicitly opt into fail-open behavior.</p>
+      </article>
+      <article>
+        <h3>Payload snapshots</h3>
+        <p>Approved commands use the evaluated payload snapshot, not mutable intent metadata.</p>
+      </article>
+      <article>
+        <h3>Executor boundary</h3>
+        <p>Side-effecting code should accept only approved command objects, never raw model output.</p>
+      </article>
+    </section>
+  </main>
+
+  <script src="./script.js"></script>
+</body>
+</html>

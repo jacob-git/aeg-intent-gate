@@ -238,6 +238,7 @@ npm run example:approval-server
 ```
 
 More integration notes are in [docs/INTEGRATIONS.md](./docs/INTEGRATIONS.md).
+Cloudflare Pages setup notes are in [docs/CLOUDFLARE_PAGES.md](./docs/CLOUDFLARE_PAGES.md).
 
 ## Core Lifecycle
 
