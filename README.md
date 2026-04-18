@@ -10,6 +10,8 @@ Add an approval gate before AI tool calls hit your real executor.
 
 Live demo: [aeg-intent-gate.pages.dev](https://aeg-intent-gate.pages.dev)
 
+Live starter app: [aeg-intent-gate-starter.pages.dev](https://aeg-intent-gate-starter.pages.dev)
+
 ![aeg-intent-gate approval flow](https://aeg-intent-gate.pages.dev/assets/approval-flow.svg)
 
 ## Install
@@ -217,6 +219,10 @@ Treat this package as an in-process enforcement point, not as a complete securit
 Complete browser starter app:
 
 https://github.com/jacob-git/aeg-intent-gate-starter
+
+Live starter app:
+
+https://aeg-intent-gate-starter.pages.dev
 
 Live hosted demo:
 

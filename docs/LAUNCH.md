@@ -61,6 +61,7 @@ npm install @pallattu/aeg-intent-gate
 Demo: https://aeg-intent-gate.pages.dev
 Repo: https://github.com/jacob-git/aeg-intent-gate
 Starter app: https://github.com/jacob-git/aeg-intent-gate-starter
+Live starter: https://aeg-intent-gate-starter.pages.dev
 ```
 
 ## Distribution Checklist
@@ -70,7 +71,7 @@ Starter app: https://github.com/jacob-git/aeg-intent-gate-starter
 - Add GitHub topics: `ai`, `ai-agents`, `mcp`, `tool-calling`, `tool-calls`, `human-in-the-loop`, `approval`, `approval-gate`, `intent-gate`, `guardrails`, `openai`, `anthropic`, `typescript`.
 - Share the launch post in MCP, OpenAI, Anthropic, TypeScript, and agent-builder communities.
 - Create a short terminal GIF from `npx @pallattu/aeg-intent-gate`.
-- Create a short browser GIF from `npm run example:approval-server`.
+- Create a short browser GIF from `https://aeg-intent-gate-starter.pages.dev`.
 - Pin the starter app in GitHub/social posts: `https://github.com/jacob-git/aeg-intent-gate-starter`.
 - Publish a follow-up article focused only on MCP approval gates.
 - Publish a follow-up article focused only on OpenAI function-call approval.

@@ -2,6 +2,12 @@
 
 All notable changes to this package will be documented in this file.
 
+## 0.6.3 - 2026-04-18
+
+### Added
+
+- Added the live Cloudflare Pages starter app URL to README, launch copy, and the demo site.
+
 ## 0.6.2 - 2026-04-18
 
 ### Changed
