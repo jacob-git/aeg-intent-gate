@@ -7,13 +7,13 @@ Lightweight TypeScript lifecycle, policy, and execution gating for AI-generated 
 ## Install
 
 ```sh
-npm install aeg-intent-gate
+npm install @pallattu/aeg-intent-gate
 ```
 
 ## Quick Example
 
 ```ts
-import { createIntentGate, createPolicy, type Intent } from "aeg-intent-gate";
+import { createIntentGate, createPolicy, type Intent } from "@pallattu/aeg-intent-gate";
 
 type AppIntent = Intent<{ actor: string }>;
 

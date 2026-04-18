@@ -1,5 +1,5 @@
 {
-  "name": "aeg-intent-gate",
+  "name": "@pallattu/aeg-intent-gate",
   "version": "0.1.0",
   "description": "A lightweight TypeScript runtime for evaluating AI-generated intents against policy.",
   "type": "module",
