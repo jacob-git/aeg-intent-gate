@@ -6,6 +6,13 @@ export type Intent<Metadata extends Record<string, unknown> = Record<string, unk
   metadata?: Metadata;
 };
 
+export type IntentStatus = "proposed" | "evaluated" | "approved" | "blocked" | "requires_approval";
+
+export type ManagedIntent<TIntent extends Intent = Intent> = TIntent & {
+  id: string;
+  status: IntentStatus;
+};
+
 export type AgentContext = {
   agentId: string;
   capabilities: string[];
@@ -18,21 +25,22 @@ export type Decision = {
   metadata?: Record<string, unknown>;
 };
 export type DecisionInput = DecisionOutcome | Decision;
-export type EventType = "IntentEvaluated" | "IntentBlocked" | "IntentApproved" | "ApprovalRequired";
+export type EventType = "IntentProposed" | "IntentEvaluated" | "IntentBlocked" | "IntentApproved" | "ApprovalRequired";
 export type JsonValue = null | boolean | number | string | JsonValue[] | { [key: string]: JsonValue };
 
 export type MaybePromise<T> = T | Promise<T>;
 
-export type IntentEvent = {
+export type Event = {
   id: string;
   type: EventType;
   timestamp: string;
   intentId: string;
-  decision: Decision;
+  status: IntentStatus;
+  decision?: Decision;
   metadata: Record<string, unknown>;
 };
 
-export type EventListener = (event: IntentEvent) => MaybePromise<void>;
+export type EventListener = (event: Event) => MaybePromise<void>;
 export type Policy<TIntent extends Intent = Intent> = {
   name?: string;
   match: (intent: TIntent) => MaybePromise<boolean>;
@@ -53,6 +61,7 @@ export type ApprovedCommand = {
   payload: Record<string, JsonValue>;
 };
 export type IntentGate<TIntent extends Intent = Intent> = {
-  evaluate: (intent: TIntent) => Promise<Decision>;
-  toCommand: (intent: TIntent, decision: Decision) => ApprovedCommand;
+  proposeIntent: (intent: TIntent) => Promise<ManagedIntent<TIntent>>;
+  evaluateIntent: (intent: ManagedIntent<TIntent>) => Promise<Decision>;
+  toCommand: (intent: ManagedIntent<TIntent>, decision: Decision) => ApprovedCommand;
 };

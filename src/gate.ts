@@ -1,4 +1,4 @@
-import type { AgentContext, ApprovedCommand, Decision, DecisionInput, EventListener, EventType, Intent, IntentEvent, IntentGate, IntentGateConfig, JsonValue, Policy } from "./types.js";
+import type { AgentContext, ApprovedCommand, Decision, DecisionInput, Event, EventListener, EventType, Intent, IntentGate, IntentGateConfig, IntentStatus, JsonValue, ManagedIntent, Policy } from "./types.js";
 
 const defaultFallbackDecision: Decision = { outcome: "approved" };
 type EvaluatedIntent = {
@@ -6,6 +6,7 @@ type EvaluatedIntent = {
   type: string;
   target: string;
   requestedCapabilities: string[];
+  status: IntentStatus;
 };
 
 export function createPolicy<TIntent extends Intent = Intent>(
@@ -24,9 +25,18 @@ export function createIntentGate<TIntent extends Intent = Intent>(
   const onEvent = config.onEvent;
   const evaluatedDecisions = new WeakMap<Decision, EvaluatedIntent>();
   return {
-    async evaluate(intent: TIntent): Promise<Decision> {
+    async proposeIntent(intent: TIntent): Promise<ManagedIntent<TIntent>> {
       validateIntent(intent);
-      const intentId = intent.id ?? createId("intent");
+      const proposed = { ...intent, id: intent.id ?? createId("intent"), status: "proposed" as const };
+      await emitEvent(onEvent, "IntentProposed", proposed.id, "proposed", { agentId: agent.agentId });
+      return proposed;
+    },
+    async evaluateIntent(intent: ManagedIntent<TIntent>): Promise<Decision> {
+      validateIntent(intent);
+      if (intent.status !== "proposed") {
+        throw new Error(`Cannot evaluate intent with ${intent.status} status.`);
+      }
+      const intentId = intent.id;
       let decision = normalizeDecision(fallbackDecision);
       let metadata: Record<string, unknown> = { fallback: true };
       const missingCapabilities = findMissingCapabilities(intent, agent);
@@ -50,17 +60,20 @@ export function createIntentGate<TIntent extends Intent = Intent>(
         if (metadata.fallback) metadata = { ...metadata, agentId: agent.agentId };
       }
 
-      // Emit after evaluation so both generic and outcome-specific subscribers can react.
-      await emitDecisionEvents(onEvent, intentId, decision, metadata);
+      intent.status = "evaluated";
+      await emitEvent(onEvent, "IntentEvaluated", intentId, "evaluated", metadata, decision);
+      intent.status = toIntentStatus(decision);
+      await emitEvent(onEvent, toDecisionEventType(decision), intentId, intent.status, metadata, decision);
       evaluatedDecisions.set(decision, {
         intentId,
         type: intent.type,
         target: intent.target,
         requestedCapabilities: [...intent.requestedCapabilities],
+        status: intent.status,
       });
       return decision;
     },
-    toCommand(intent: TIntent, decision: Decision): ApprovedCommand {
+    toCommand(intent: ManagedIntent<TIntent>, decision: Decision): ApprovedCommand {
       validateIntent(intent);
       const evaluated = evaluatedDecisions.get(decision);
       if (!evaluated) {
@@ -71,6 +84,9 @@ export function createIntentGate<TIntent extends Intent = Intent>(
       }
       if (decision.outcome !== "approved") {
         throw new Error(`Cannot create command for ${decision.outcome} intent.`);
+      }
+      if (intent.status !== "approved") {
+        throw new Error(`Cannot create command for intent with ${intent.status} status.`);
       }
 
       return {
@@ -110,7 +126,7 @@ function findMissingCapabilities(intent: Intent, agent: AgentContext): string[] 
 }
 
 function isSameIntent(intent: Intent, evaluated: EvaluatedIntent): boolean {
-  return (intent.id === undefined || intent.id === evaluated.intentId)
+  return intent.id === evaluated.intentId
     && intent.type === evaluated.type
     && intent.target === evaluated.target
     && hasSameItems(intent.requestedCapabilities, evaluated.requestedCapabilities);
@@ -132,18 +148,15 @@ function isStringArray(value: unknown): value is string[] {
   return Array.isArray(value) && value.every(isNonEmptyString);
 }
 
-async function emitDecisionEvents(
+async function emitEvent(
   onEvent: EventListener | undefined,
+  type: EventType,
   intentId: string,
-  decision: Decision,
+  status: IntentStatus,
   metadata: Record<string, unknown>,
+  decision?: Decision,
 ): Promise<void> {
-  if (!onEvent) {
-    return;
-  }
-
-  await onEvent(createEvent("IntentEvaluated", intentId, decision, metadata));
-  await onEvent(createEvent(toDecisionEventType(decision), intentId, decision, metadata));
+  if (onEvent) await onEvent(createEvent(type, intentId, metadata, status, decision));
 }
 
 function toDecisionEventType(decision: Decision): EventType {
@@ -157,17 +170,23 @@ function toDecisionEventType(decision: Decision): EventType {
   }
 }
 
+function toIntentStatus(decision: Decision): IntentStatus {
+  return decision.outcome;
+}
+
 function createEvent(
   type: EventType,
   intentId: string,
-  decision: Decision,
   metadata: Record<string, unknown>,
-): IntentEvent {
+  status: IntentStatus,
+  decision?: Decision,
+): Event {
   return {
     id: createId("event"),
     type,
     timestamp: new Date().toISOString(),
     intentId,
+    status,
     decision,
     metadata,
   };
