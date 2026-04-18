@@ -173,6 +173,18 @@ pre {
   padding: 72px 20px;
 }
 
+.visual-proof {
+  padding-bottom: 8px;
+}
+
+.visual-proof img {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: block;
+  height: auto;
+  width: 100%;
+}
+
 .section-heading {
   max-width: 760px;
 }

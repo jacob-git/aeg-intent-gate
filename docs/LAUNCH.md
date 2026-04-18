@@ -65,7 +65,8 @@ Repo: https://github.com/jacob-git/aeg-intent-gate
 ## Distribution Checklist
 
 - Pin the GitHub repo description to "A tiny TypeScript approval gate for AI tool calls, MCP tools, and human-in-the-loop workflows."
-- Add GitHub topics: `ai`, `agents`, `mcp`, `tool-calling`, `guardrails`, `human-in-the-loop`, `openai`, `anthropic`, `typescript`.
+- Set the GitHub website URL to `https://aeg-intent-gate.pages.dev`.
+- Add GitHub topics: `ai`, `ai-agents`, `mcp`, `tool-calling`, `tool-calls`, `human-in-the-loop`, `approval`, `approval-gate`, `intent-gate`, `guardrails`, `openai`, `anthropic`, `typescript`.
 - Share the launch post in MCP, OpenAI, Anthropic, TypeScript, and agent-builder communities.
 - Create a short terminal GIF from `npx @pallattu/aeg-intent-gate`.
 - Create a short browser GIF from `npm run example:approval-server`.

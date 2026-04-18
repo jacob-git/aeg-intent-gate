@@ -10,6 +10,8 @@ Add an approval gate before AI tool calls hit your real executor.
 
 Live demo: [aeg-intent-gate.pages.dev](https://aeg-intent-gate.pages.dev)
 
+![aeg-intent-gate approval flow](https://aeg-intent-gate.pages.dev/assets/approval-flow.svg)
+
 ## Install
 
 ```sh
@@ -241,6 +243,7 @@ npm run example:approval-server
 
 More integration notes are in [docs/INTEGRATIONS.md](./docs/INTEGRATIONS.md).
 Cloudflare Pages setup notes are in [docs/CLOUDFLARE_PAGES.md](./docs/CLOUDFLARE_PAGES.md).
+Framework examples are in [examples/frameworks](./examples/frameworks).
 
 ## Core Lifecycle
 

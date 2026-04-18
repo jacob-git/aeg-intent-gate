@@ -80,3 +80,16 @@ async function execute(command: ApprovedCommand) {
   }
 }
 ```
+
+## Frameworks
+
+The `examples/frameworks` directory includes a Hono-style approval endpoint example:
+
+```text
+examples/frameworks/hono-approval-middleware.ts
+```
+
+It shows two endpoints:
+
+- `POST /tool-calls/openai` to gate an OpenAI tool call
+- `POST /approvals/:intentId` to approve a pending intent and create an executable command

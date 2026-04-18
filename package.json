@@ -1,6 +1,6 @@
 {
   "name": "@pallattu/aeg-intent-gate",
-  "version": "0.5.2",
+  "version": "0.6.0",
   "description": "A tiny TypeScript approval gate for AI tool calls, MCP tools, and human-in-the-loop workflows.",
   "type": "module",
   "main": "dist/index.js",

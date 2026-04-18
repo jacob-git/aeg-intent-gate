@@ -2,6 +2,14 @@
 
 All notable changes to this package will be documented in this file.
 
+## 0.6.0 - 2026-04-18
+
+### Added
+
+- Added animated approval-flow SVG for README and site visual proof.
+- Added Hono-style approval endpoint example under `examples/frameworks`.
+- Added clearer GitHub metadata checklist to launch docs.
+
 ## 0.5.2 - 2026-04-18
 
 ### Changed
