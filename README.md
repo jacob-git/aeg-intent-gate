@@ -284,6 +284,7 @@ npm run example:durable-queue
 
 More integration notes are in [docs/INTEGRATIONS.md](./docs/INTEGRATIONS.md).
 Cloudflare Pages setup notes are in [docs/CLOUDFLARE_PAGES.md](./docs/CLOUDFLARE_PAGES.md).
+Deployment examples are in [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md).
 Framework examples are in [examples/frameworks](./examples/frameworks).
 MCP proxy starter is in [examples/mcp-proxy-starter.mjs](./examples/mcp-proxy-starter.mjs).
 Roadmap items are in [docs/ROADMAP.md](./docs/ROADMAP.md).

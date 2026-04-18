@@ -128,3 +128,13 @@ The Hono and Express examples show two endpoint patterns:
 - `POST /approvals/:intentId` to approve a pending intent and create an executable command
 
 The Vercel AI SDK and LangGraph-style examples show how to gate framework-native tool invocation objects before dispatching them to real tools.
+
+## Deployments
+
+Copy-paste deployment examples are in [DEPLOYMENT.md](./DEPLOYMENT.md):
+
+```text
+examples/deployments/cloudflare-pages-function.js
+examples/deployments/vercel-route.ts
+examples/deployments/node-server.mjs
+```

@@ -2,6 +2,13 @@
 
 All notable changes to this package will be documented in this file.
 
+## 0.10.0 - 2026-04-18
+
+### Added
+
+- Added copy-paste deployment examples for Cloudflare Pages Functions, Vercel route handlers, and plain Node.
+- Added a deployment guide covering Cloudflare build settings, Vercel approval persistence, and Node server usage.
+
 ## 0.9.0 - 2026-04-18
 
 ### Added
