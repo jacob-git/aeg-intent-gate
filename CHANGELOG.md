@@ -2,6 +2,14 @@
 
 All notable changes to this package will be documented in this file.
 
+## 0.1.1 - 2026-04-18
+
+### Added
+
+- Added `examples/basic-lifecycle.mjs`.
+- Added `npm run example`.
+- Included `CHANGELOG.md` in package files.
+
 ## 0.1.0 - 2026-04-18
 
 Initial public release of `@pallattu/aeg-intent-gate`.
