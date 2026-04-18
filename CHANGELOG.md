@@ -2,6 +2,18 @@
 
 All notable changes to this package will be documented in this file.
 
+## 0.3.0 - 2026-04-18
+
+### Added
+
+- Added `gateToolCall(gate, toolCall)` for gating common AI tool-call shapes.
+- Added tool-call approval and MCP-style tool gating examples.
+
+### Changed
+
+- Changed the default fallback decision to `requires_approval` so unmatched intents fail closed.
+- Repositioned the README around safe AI tool execution and human approval workflows.
+
 ## 0.2.0 - 2026-04-18
 
 ### Added

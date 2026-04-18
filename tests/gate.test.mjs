@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { createIntentGate, createPolicy } from "../dist/index.js";
+import { createIntentGate, createPolicy, gateToolCall } from "../dist/index.js";
 
 const baseAgent = {
   agentId: "agent_1",
@@ -93,10 +93,25 @@ test("fallback decision applies when no policy matches", async () => {
   assert.equal(proposed.status, "approved");
 });
 
+test("fallback decision requires approval by default when no policy matches", async () => {
+  const gate = createIntentGate({
+    agent: baseAgent,
+    policies: [],
+  });
+
+  const proposed = await gate.proposeIntent(logsIntent());
+  const decision = await gate.evaluateIntent(proposed);
+
+  assert.equal(decision.outcome, "requires_approval");
+  assert.equal(decision.reason, "No policy matched this intent.");
+  assert.equal(proposed.status, "requires_approval");
+});
+
 test("events are emitted in lifecycle order", async () => {
   const events = [];
   const gate = createIntentGate({
     agent: baseAgent,
+    fallbackDecision: { outcome: "approved" },
     policies: [],
     onEvent: (event) => events.push(event),
   });
@@ -117,7 +132,11 @@ test("events are emitted in lifecycle order", async () => {
 });
 
 test("evaluateIntent rejects intents that already left proposed status", async () => {
-  const gate = createIntentGate({ agent: baseAgent, policies: [] });
+  const gate = createIntentGate({
+    agent: baseAgent,
+    fallbackDecision: { outcome: "approved" },
+    policies: [],
+  });
   const proposed = await gate.proposeIntent(logsIntent());
 
   await gate.evaluateIntent(proposed);
@@ -125,7 +144,11 @@ test("evaluateIntent rejects intents that already left proposed status", async (
 });
 
 test("toCommand creates sanitized commands for approved evaluated intents", async () => {
-  const gate = createIntentGate({ agent: baseAgent, policies: [] });
+  const gate = createIntentGate({
+    agent: baseAgent,
+    fallbackDecision: { outcome: "approved" },
+    policies: [],
+  });
   const proposed = await gate.proposeIntent(logsIntent({
     metadata: {
       actor: "agent",
@@ -160,7 +183,11 @@ test("toCommand rejects blocked decisions", async () => {
 });
 
 test("toCommand rejects forged decisions and mismatched intents", async () => {
-  const gate = createIntentGate({ agent: baseAgent, policies: [] });
+  const gate = createIntentGate({
+    agent: baseAgent,
+    fallbackDecision: { outcome: "approved" },
+    policies: [],
+  });
   const proposed = await gate.proposeIntent(logsIntent());
   const decision = await gate.evaluateIntent(proposed);
   const other = await gate.proposeIntent(logsIntent({ id: "intent_other" }));
@@ -174,6 +201,10 @@ test("approveIntent converts approval-required decisions into executable approva
   const gate = createIntentGate({
     agent: baseAgent,
     policies: [
+      createPolicy({
+        match: (intent) => intent.type === "logs.read",
+        evaluate: () => ({ outcome: "approved" }),
+      }),
       createPolicy({
         match: (intent) => intent.type === "service.restart",
         evaluate: () => ({ outcome: "requires_approval" }),
@@ -211,6 +242,10 @@ test("approveIntent rejects blocked, approved, forged, and mismatched decisions"
   const gate = createIntentGate({
     agent: baseAgent,
     policies: [
+      createPolicy({
+        match: (intent) => intent.type === "logs.read",
+        evaluate: () => ({ outcome: "approved" }),
+      }),
       createPolicy({
         match: (intent) => intent.type === "service.restart",
         evaluate: () => ({ outcome: "requires_approval" }),
@@ -252,4 +287,65 @@ test("approveIntent rejects blocked, approved, forged, and mismatched decisions"
     () => gate.approveIntent(blockedIntent, blockedDecision, { approvedBy: "human_1" }),
     /blocked decision/,
   );
+});
+
+test("gateToolCall gates common tool call shapes", async () => {
+  const gate = createIntentGate({
+    agent: {
+      agentId: "support_agent",
+      capabilities: ["refund.create"],
+    },
+    policies: [
+      createPolicy({
+        name: "small-refunds",
+        match: (intent) => intent.type === "refund.create" && intent.metadata?.args?.amount <= 100,
+        evaluate: () => "approved",
+      }),
+      createPolicy({
+        name: "large-refunds",
+        match: (intent) => intent.type === "refund.create",
+        evaluate: () => "requires_approval",
+      }),
+    ],
+  });
+
+  const smallRefund = await gateToolCall(gate, {
+    tool: "refund.create",
+    target: "stripe",
+    args: { customerId: "cus_123", amount: 75 },
+  });
+  const largeRefund = await gateToolCall(gate, {
+    tool: "refund.create",
+    target: "stripe",
+    args: { customerId: "cus_123", amount: 500 },
+  });
+
+  assert.equal(smallRefund.decision.outcome, "approved");
+  assert.equal(smallRefund.command?.type, "refund.create");
+  assert.deepEqual(smallRefund.command?.payload, {
+    args: { customerId: "cus_123", amount: 75 },
+  });
+  assert.equal(largeRefund.decision.outcome, "requires_approval");
+  assert.equal(largeRefund.command, undefined);
+});
+
+test("gateToolCall defaults capability and target to the tool name", async () => {
+  const gate = createIntentGate({
+    agent: {
+      agentId: "agent_1",
+      capabilities: ["email.send"],
+    },
+    fallbackDecision: "approved",
+    policies: [],
+  });
+
+  const result = await gateToolCall(gate, {
+    tool: "email.send",
+    args: { to: "ops@example.com" },
+  });
+
+  assert.equal(result.intent.type, "email.send");
+  assert.equal(result.intent.target, "email.send");
+  assert.deepEqual(result.intent.requestedCapabilities, ["email.send"]);
+  assert.equal(result.command?.target, "email.send");
 });

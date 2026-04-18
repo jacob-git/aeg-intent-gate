@@ -1,4 +1,5 @@
 export { createIntentGate, createPolicy } from "./gate.js";
+export { gateToolCall } from "./tool-call.js";
 export type {
   AgentContext,
   ApprovalContext,
@@ -18,3 +19,4 @@ export type {
   MaybePromise,
   Policy,
 } from "./types.js";
+export type { ToolCall, ToolCallGateResult } from "./tool-call.js";

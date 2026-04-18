@@ -1,6 +1,6 @@
 {
   "name": "@pallattu/aeg-intent-gate",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A lightweight TypeScript runtime for evaluating AI-generated intents against policy.",
   "type": "module",
   "main": "dist/index.js",
@@ -13,6 +13,7 @@
   },
   "files": [
     "dist",
+    "examples",
     "README.md",
     "CHANGELOG.md",
     "LICENSE"
@@ -42,6 +43,8 @@
   "scripts": {
     "build": "tsc",
     "example": "npm run build && node examples/basic-lifecycle.mjs",
+    "example:tool-call": "npm run build && node examples/tool-call-approval.mjs",
+    "example:mcp": "npm run build && node examples/mcp-tool-gate.mjs",
     "typecheck": "tsc --noEmit",
     "test": "npm run build && node --test tests/*.test.mjs",
     "prepublishOnly": "npm test"

@@ -1,6 +1,9 @@
 import type { AgentContext, ApprovalContext, ApprovedCommand, Decision, DecisionInput, Event, EventListener, EventType, Intent, IntentGate, IntentGateConfig, IntentStatus, JsonValue, ManagedIntent, Policy } from "./types.js";
 
-const defaultFallbackDecision: Decision = { outcome: "approved" };
+const defaultFallbackDecision: Decision = {
+  outcome: "requires_approval",
+  reason: "No policy matched this intent.",
+};
 type EvaluatedIntent = {
   intentId: string;
   type: string;
