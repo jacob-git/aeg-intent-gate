@@ -70,8 +70,7 @@ Live starter: https://aeg-intent-gate-starter.pages.dev
 - Set the GitHub website URL to `https://aeg-intent-gate.pages.dev`.
 - Add GitHub topics: `ai`, `ai-agents`, `mcp`, `tool-calling`, `tool-calls`, `human-in-the-loop`, `approval`, `approval-gate`, `intent-gate`, `guardrails`, `openai`, `anthropic`, `typescript`.
 - Share the launch post in MCP, OpenAI, Anthropic, TypeScript, and agent-builder communities.
-- Create a short terminal GIF from `npx @pallattu/aeg-intent-gate`.
-- Create a short browser GIF from `https://aeg-intent-gate-starter.pages.dev`.
+- Create the launch assets in [docs/LAUNCH_ASSETS.md](./LAUNCH_ASSETS.md).
 - Pin the starter app in GitHub/social posts: `https://github.com/jacob-git/aeg-intent-gate-starter`.
 - Publish a follow-up article focused only on MCP approval gates.
 - Publish a follow-up article focused only on OpenAI function-call approval.
@@ -80,6 +79,6 @@ Live starter: https://aeg-intent-gate-starter.pages.dev
 
 - MCP proxy starter repository.
 - Approval server with persistent storage adapters.
-- Hono/Express middleware.
-- Vercel AI SDK example.
-- LangGraph example.
+- OpenAI Agents SDK example.
+- Durable audit sink example.
+- Framework examples with real executors instead of fake commands.

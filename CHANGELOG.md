@@ -2,6 +2,13 @@
 
 All notable changes to this package will be documented in this file.
 
+## 0.7.0 - 2026-04-18
+
+### Added
+
+- Added Express, Vercel AI SDK, and LangGraph-style framework examples.
+- Added public roadmap, launch asset plan, and GitHub issue templates.
+
 ## 0.6.3 - 2026-04-18
 
 ### Added

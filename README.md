@@ -267,6 +267,8 @@ npm run example:approval-server
 More integration notes are in [docs/INTEGRATIONS.md](./docs/INTEGRATIONS.md).
 Cloudflare Pages setup notes are in [docs/CLOUDFLARE_PAGES.md](./docs/CLOUDFLARE_PAGES.md).
 Framework examples are in [examples/frameworks](./examples/frameworks).
+Roadmap items are in [docs/ROADMAP.md](./docs/ROADMAP.md).
+Launch asset instructions are in [docs/LAUNCH_ASSETS.md](./docs/LAUNCH_ASSETS.md).
 
 ## Core Lifecycle
 

@@ -83,13 +83,18 @@ async function execute(command: ApprovedCommand) {
 
 ## Frameworks
 
-The `examples/frameworks` directory includes a Hono-style approval endpoint example:
+The `examples/frameworks` directory includes copy-paste examples for common server and agent-runtime surfaces:
 
 ```text
 examples/frameworks/hono-approval-middleware.ts
+examples/frameworks/express-approval-middleware.ts
+examples/frameworks/vercel-ai-sdk-tool-gate.ts
+examples/frameworks/langgraph-tool-gate.ts
 ```
 
-It shows two endpoints:
+The Hono and Express examples show two endpoint patterns:
 
 - `POST /tool-calls/openai` to gate an OpenAI tool call
 - `POST /approvals/:intentId` to approve a pending intent and create an executable command
+
+The Vercel AI SDK and LangGraph-style examples show how to gate framework-native tool invocation objects before dispatching them to real tools.
