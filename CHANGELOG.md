@@ -2,6 +2,13 @@
 
 All notable changes to this package will be documented in this file.
 
+## 0.5.1 - 2026-04-18
+
+### Changed
+
+- Set package homepage to the live Cloudflare Pages demo.
+- Added the live demo link to README and launch copy.
+
 ## 0.5.0 - 2026-04-18
 
 ### Added

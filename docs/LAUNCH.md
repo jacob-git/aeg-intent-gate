@@ -46,6 +46,8 @@ It supports:
 
 Try it:
 
+https://aeg-intent-gate.pages.dev
+
 ```sh
 npx @pallattu/aeg-intent-gate
 ```
@@ -56,6 +58,7 @@ Install:
 npm install @pallattu/aeg-intent-gate
 ```
 
+Demo: https://aeg-intent-gate.pages.dev
 Repo: https://github.com/jacob-git/aeg-intent-gate
 ```
 
